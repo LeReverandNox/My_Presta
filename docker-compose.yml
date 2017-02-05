@@ -8,3 +8,13 @@ services:
             - $PROXY_HTTPS_PORT:443/tcp
         volumes:
             - $DOCKER_SOCK:/tmp/docker.sock:ro
+    mariadb:
+        build: ./mariadb
+        restart: always
+        volumes:
+            - $MARIADB_VOLUME:/var/lib/mysql
+        environment:
+            - MYSQL_USER=$MYSQL_USER
+            - MYSQL_PASSWORD=$MYSQL_PASSWORD
+            - MYSQL_DATABASE=$MYSQL_DATABASE
+            - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
