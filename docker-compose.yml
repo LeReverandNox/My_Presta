@@ -18,3 +18,10 @@ services:
             - MYSQL_PASSWORD=$MYSQL_PASSWORD
             - MYSQL_DATABASE=$MYSQL_DATABASE
             - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.6
+        restart: always
+        links:
+            - mariadb:db
+        environment:
+            - VIRTUAL_HOST=$PMA_VIRTUAL_HOST
