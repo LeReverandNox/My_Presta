@@ -53,5 +53,5 @@ services:
             - PS_COUNTRY=$PS_COUNTRY
             - PS_DOMAIN=$PS_VIRTUAL_HOST
             - PS_FOLDER_INSTALL=$PS_FOLDER_INSTALL
-            - ADMIN_EMAIL=$ADMIN_EMAIL
+            - ADMIN_MAIL=$ADMIN_MAIL
             - ADMIN_PASSWD=$ADMIN_PASSWD
