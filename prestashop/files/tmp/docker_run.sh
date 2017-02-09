@@ -73,8 +73,7 @@ if [ ! -f ./config/settings.inc.php  ]; then
 			--password=$ADMIN_PASSWD --email="$ADMIN_MAIL" --language=$PS_LANGUAGE --country=$PS_COUNTRY \
 			--newsletter=0 --send_email=0 --prefix=$DB_PREFIX --name=$PS_SHOP_NAME
 	fi
-
-	chown www-data:www-data -R /var/www/html/
+	find /var/www/html/ -not -name 'mypresta*' -exec chown www-data:www-data {} \;
 fi
 
 echo "\n* Almost ! Starting Apache now\n";
