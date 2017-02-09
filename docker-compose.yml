@@ -32,8 +32,9 @@ services:
         links:
             - mariadb:db
         volumes:
-            - ./prestashop/modules:/var/www/html/modules
-            - ./prestashop/themes:/var/www/html/themes
+            - ./prestashop/modules/mymodule1:/var/www/html/modules/mymodule1
+            - ./prestashop/modules/mymodule2:/var/www/html/modules/mymodule2
+            - ./prestashop/themes/mytheme:/var/www/html/themes
         environment:
             - DB_SERVER=db
             - DB_USER=$MYSQL_USER
