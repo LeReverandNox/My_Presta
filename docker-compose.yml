@@ -1,0 +1,58 @@
+version: '2'
+services:
+    reverse-proxy:
+        image: jwilder/nginx-proxy
+        restart: always
+        ports:
+            - $PROXY_HTTP_PORT:80/tcp
+            - $PROXY_HTTPS_PORT:443/tcp
+        volumes:
+            - $DOCKER_SOCK:/tmp/docker.sock:ro
+    mariadb:
+        build: ./mariadb
+        restart: always
+        volumes:
+            - $MARIADB_VOLUME:/var/lib/mysql
+        environment:
+            - MYSQL_USER=$MYSQL_USER
+            - MYSQL_PASSWORD=$MYSQL_PASSWORD
+            - MYSQL_DATABASE=$MYSQL_DATABASE
+            - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.6
+        restart: always
+        links:
+            - mariadb:db
+        environment:
+            - VIRTUAL_HOST=$PMA_VIRTUAL_HOST
+
+    prestashop:
+        build: ./prestashop
+        restart: always
+        links:
+            - mariadb:db
+        volumes:
+            - ./prestashop/modules/myprestamodule1:/var/www/html/modules/myprestamodule1
+            - ./prestashop/modules/myprestamodule2:/var/www/html/modules/myprestamodule2
+            - ./prestashop/themes/myprestatheme:/var/www/html/themes/myprestatheme
+            - $PS_HTML_VOLUME:/var/www/html
+            - $PS_HTML_VOLUME/modules:/var/www/html/modules
+            - $PS_HTML_VOLUME/themes:/var/www/html/themes
+        environment:
+            - DB_SERVER=db
+            - DB_USER=$MYSQL_USER
+            - DB_PASSWD=$MYSQL_PASSWORD
+            - DB_NAME=$MYSQL_DATABASE
+            - DB_PREFIX=$DB_PREFIX
+            - PS_SHOP_NAME=$PS_SHOP_NAME
+            - PS_DEV_MODE=$PS_DEV_MODE
+            - VIRTUAL_HOST=$PS_VIRTUAL_HOST
+            - PS_HANDLE_DYNAMIC_DOMAIN=1
+            # Auto-installation
+            - PS_INSTALL_AUTO=$PS_INSTALL_AUTO
+            - PS_LANGUAGE=$PS_LANGUAGE
+            - PS_COUNTRY=$PS_COUNTRY
+            - PS_DOMAIN=$PS_VIRTUAL_HOST
+            - PS_FOLDER_INSTALL=$PS_FOLDER_INSTALL
+            - ADMIN_MAIL=$ADMIN_MAIL
+            - ADMIN_PASSWD=$ADMIN_PASSWD
