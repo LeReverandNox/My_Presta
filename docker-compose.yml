@@ -35,6 +35,9 @@ services:
             - ./prestashop/modules/mymodule1:/var/www/html/modules/mymodule1
             - ./prestashop/modules/mymodule2:/var/www/html/modules/mymodule2
             - ./prestashop/themes/mytheme:/var/www/html/themes/mytheme
+            - $PS_HTML_VOLUME:/var/www/html
+            - $PS_HTML_VOLUME/modules:/var/www/html/modules
+            - $PS_HTML_VOLUME/themes:/var/www/html/themes
         environment:
             - DB_SERVER=db
             - DB_USER=$MYSQL_USER
