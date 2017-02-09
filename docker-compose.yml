@@ -44,6 +44,7 @@ services:
             - DB_PASSWD=$MYSQL_PASSWORD
             - DB_NAME=$MYSQL_DATABASE
             - DB_PREFIX=$DB_PREFIX
+            - PS_SHOP_NAME=$PS_SHOP_NAME
             - PS_DEV_MODE=$PS_DEV_MODE
             - VIRTUAL_HOST=$PS_VIRTUAL_HOST
             - PS_HANDLE_DYNAMIC_DOMAIN=1
