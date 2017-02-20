@@ -52,7 +52,7 @@ services:
             - PS_INSTALL_AUTO=$PS_INSTALL_AUTO
             - PS_LANGUAGE=$PS_LANGUAGE
             - PS_COUNTRY=$PS_COUNTRY
-            - PS_DOMAIN=$PS_VIRTUAL_HOST
+            - PS_DOMAIN=$PS_DOMAIN
             - PS_FOLDER_INSTALL=$PS_FOLDER_INSTALL
             - ADMIN_MAIL=$ADMIN_MAIL
             - ADMIN_PASSWD=$ADMIN_PASSWD
