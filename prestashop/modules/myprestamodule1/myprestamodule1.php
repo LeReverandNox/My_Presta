@@ -3,6 +3,8 @@ if (!defined('_PS_VERSION_')) {
   exit;
 }
 
+require_once __DIR__ . '/models/Video.php';
+
 class MyPrestaModule1 extends Module
 {
   public function __construct()
@@ -50,12 +52,8 @@ class MyPrestaModule1 extends Module
 
   public function hookDisplayProductTab($params)
   {
-      $this->context->smarty->assign([
-          "video" => true,
-          "video_key" => "oavMtUWDBTM"
-      ]
-
-    );
+    $video = Video::findByProductId(1);
+    $this->context->smarty->assign("video", $video);
     return $this->display(__FILE__, "display-product-tab.tpl");
   }
 
