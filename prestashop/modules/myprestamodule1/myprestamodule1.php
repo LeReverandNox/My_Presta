@@ -21,11 +21,12 @@ class MyPrestaModule1 extends Module
     $this->description = $this->l('A kick-ass first presta module to add a Youtube video on a product page.');
 
     $this->confirmUninstall = $this->l('Are you sure you want to uninstall ?!');
-    }
+  }
 
   public function install()
   {
     if(!parent::install() ||
+      !$this->registerHook("displayProductTab") ||
       !$this->registerHook("displayHeader")) {
       return false;
     }
@@ -45,5 +46,14 @@ class MyPrestaModule1 extends Module
     return $this->context->controller->addCSS($this->_path.'/views/css/myprestamodule1.css', 'all');
   }
 
+  public function hookDisplayProductTab($params)
+  {
+      $this->context->smarty->assign([
+          "video" => true,
+          "video_key" => "oavMtUWDBTM"
+      ]
+
+    );
+    return $this->display(__FILE__, "display-product-tab.tpl");
   }
 }
