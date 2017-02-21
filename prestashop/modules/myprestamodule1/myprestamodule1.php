@@ -21,15 +21,12 @@ class MyPrestaModule1 extends Module
     $this->description = $this->l('A kick-ass first presta module to add a Youtube video on a product page.');
 
     $this->confirmUninstall = $this->l('Are you sure you want to uninstall ?!');
-
-    if (!Configuration::get('MYMODULE_NAME')) {
-      $this->warning = $this->l('No name provided');
     }
-  }
 
   public function install()
   {
-    if(!parent::install()) {
+    if(!parent::install() ||
+      !$this->registerHook("displayHeader")) {
       return false;
     }
     return true;
@@ -43,8 +40,10 @@ class MyPrestaModule1 extends Module
     return true;
   }
 
-  public function getContent()
+  public function hookDisplayHeader($params)
   {
+    return $this->context->controller->addCSS($this->_path.'/views/css/myprestamodule1.css', 'all');
+  }
 
   }
 }
