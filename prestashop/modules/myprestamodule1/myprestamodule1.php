@@ -26,6 +26,7 @@ class MyPrestaModule1 extends Module
   public function install()
   {
     if(!parent::install() ||
+      !$this->addTables() ||
       !$this->registerHook("displayProductTab") ||
       !$this->registerHook("displayHeader")) {
       return false;
@@ -35,7 +36,8 @@ class MyPrestaModule1 extends Module
 
   public function uninstall()
   {
-    if(!parent::uninstall()) {
+    if(!parent::uninstall() ||
+      !$this->removeTables()) {
       return false;
     }
     return true;
@@ -55,5 +57,29 @@ class MyPrestaModule1 extends Module
 
     );
     return $this->display(__FILE__, "display-product-tab.tpl");
+  }
+
+  public function addTables()
+  {
+    $sql = [];
+    array_push($sql, require (__DIR__ . '/sql/video.php'));
+    foreach ($sql as $s) {
+      if (!Db::getInstance()->execute($s)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public function removeTables()
+  {
+    $sql = [];
+    array_push($sql, require (__DIR__ . '/sql/video.reverse.php'));
+    foreach ($sql as $s) {
+      if (!Db::getInstance()->execute($s)) {
+        return false;
+      }
+    }
+    return true;
   }
 }
