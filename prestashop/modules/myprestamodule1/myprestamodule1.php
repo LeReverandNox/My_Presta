@@ -156,11 +156,37 @@ class MyPrestaModule1 extends Module
     $formContent = preg_replace($regex, '', $form);
     $formContent = preg_replace('</form>', '', $formContent);
 
-    return $formContent;
+    if (Validate::isLoadedObject($product = new Product((int)Tools::getValue('id_product'))))
+    {
+      return $formContent;
+    }
+
   }
 
   public function hookActionProductUpdate($params)
   {
-    var_dump("On update un produit");
+    $id_product = Tools::getValue("id_product");
+    $currVideo = Video::findByProductId($id_product);
+    $url = ($a = Tools::getValue("YOUTUBE_URL") ? trim(Tools::getValue("YOUTUBE_URL")) : null) ? $a : null;
+
+    if (!$url && $currVideo) {
+      $currVideo->delete();
+      return true;
+    }
+
+    $ytRegex = '/(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/';
+    $matches = [];
+    if (preg_match($ytRegex, $url, $matches)) {
+      if ($currVideo) {
+        $currVideo->key = $matches[1];
+        $currVideo->update();
+      } else {
+        $video = new Video();
+        $video->id_product = $id_product;
+        $video->key = $matches[1];
+        $video->add();
+      }
+    }
+    return true;
   }
 }
