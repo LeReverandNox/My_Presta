@@ -154,7 +154,7 @@ class MyPrestaModule1 extends Module
     $form = $helper->generateForm($fields_form);
     $regex = '/<form.[^>]*>/';
     $formContent = preg_replace($regex, '', $form);
-    $formContent = preg_replace('</form>', '', $formContent);
+    $formContent = preg_replace('/<\/form>/', '', $formContent);
 
     if (Validate::isLoadedObject($product = new Product((int)Tools::getValue('id_product'))))
     {
