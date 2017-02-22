@@ -30,6 +30,8 @@ class MyPrestaModule1 extends Module
     if(!parent::install() ||
       !$this->addTables() ||
       !$this->registerHook("displayProductTab") ||
+      !$this->registerHook("displayAdminProductsExtra") ||
+      !$this->registerHook("actionProductUpdate") ||
       !$this->registerHook("displayHeader")) {
       return false;
     }
@@ -81,5 +83,15 @@ class MyPrestaModule1 extends Module
       }
     }
     return true;
+  }
+
+  public function hookDisplayAdminProductsExtra($params)
+  {
+    return $this->display(__FILE__, "display-product-admin-extra.tpl");
+  }
+
+  public function hookActionProductUpdate($params)
+  {
+    var_dump("On update un produit");
   }
 }
