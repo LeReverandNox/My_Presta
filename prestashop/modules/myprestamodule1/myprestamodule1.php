@@ -52,7 +52,7 @@ class MyPrestaModule1 extends Module
 
   public function hookDisplayProductTab($params)
   {
-    $id_product = $params["product"]->specificPrice["id_product"];
+    $id_product = (int)Tools::getValue('id_product');
 
     $video = Video::findByProductId($id_product);
     $this->context->smarty->assign("video", $video);
