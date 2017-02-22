@@ -13,8 +13,7 @@ class Video extends ObjectModel
         "fields" => [
             "id_video" => [
                 "type" => self::TYPE_INT,
-                "validate" => "isUnsignedInt",
-                "required" => true
+                "validate" => "isUnsignedInt"
             ],
             "id_product" => [
                 "type" => self::TYPE_INT,
