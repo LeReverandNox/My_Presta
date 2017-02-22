@@ -52,7 +52,9 @@ class MyPrestaModule1 extends Module
 
   public function hookDisplayProductTab($params)
   {
-    $video = Video::findByProductId(1);
+    $id_product = $params["product"]->specificPrice["id_product"];
+
+    $video = Video::findByProductId($id_product);
     $this->context->smarty->assign("video", $video);
     return $this->display(__FILE__, "display-product-tab.tpl");
   }
