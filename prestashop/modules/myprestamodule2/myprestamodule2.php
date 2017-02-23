@@ -90,4 +90,131 @@ class MyPrestaModule2 extends Module
       }
       return true;
   }
+
+  public function getContent()
+  {
+    $output = null;
+
+    if (Tools::isSubmit('submit'.$this->name))
+    {
+        $customTweet = substr(strval(Tools::getValue('CUSTOM_TWEET')), 0, 107);
+        $consumerKey = strval(Tools::getValue('CONSUMER_KEY'));
+        $consumerSecret = strval(Tools::getValue('CONSUMER_SECRET'));
+        $accessToken = strval(Tools::getValue('ACCESS_TOKEN'));
+        $accessTokenSecret = strval(Tools::getValue('ACCESS_TOKEN_SECRET'));
+
+        Configuration::updateValue('MYPRESTAMODULE2_CUSTOM_TWEET', $customTweet);
+        Configuration::updateValue('MYPRESTAMODULE2_CONSUMER_KEY', $consumerKey);
+        Configuration::updateValue('MYPRESTAMODULE2_CONSUMER_SECRET', $consumerSecret);
+        Configuration::updateValue('MYPRESTAMODULE2_ACCESS_TOKEN', $accessToken);
+        Configuration::updateValue('MYPRESTAMODULE2_ACCESS_TOKEN_SECRET', $accessTokenSecret);
+
+        $output .= $this->displayConfirmation($this->l('Settings updated'));
+    }
+    return $output.$this->displayConfForm();
+  }
+
+  public function displayConfForm()
+  {
+    $credentials = Configuration::getMultiple([
+      'MYPRESTAMODULE2_CONSUMER_KEY',
+      'MYPRESTAMODULE2_CONSUMER_SECRET',
+      'MYPRESTAMODULE2_ACCESS_TOKEN',
+      'MYPRESTAMODULE2_ACCESS_TOKEN_SECRET'
+    ]);
+    $customTweet = Configuration::get('MYPRESTAMODULE2_CUSTOM_TWEET');
+
+    // Get default language
+    $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+
+    // Init Fields form array
+    $fields_form[0]['form'] = array(
+        'legend' => array(
+            'title' => $this->l('Auto-tweet on new product Conf.'),
+        ),
+        'input' => array(
+            array(
+                'type' => 'text',
+                'label' => $this->l('Custom tweet message'),
+                'desc' => "The custom message displayed in your tweets (max. length 107)",
+                'name' => 'CUSTOM_TWEET',
+                'size' => 107,
+                'hint' => 'Will be like : [product_name] [custom_tweet_message] [product_short_url]',
+                'required' => false
+            ),
+            array(
+                'type' => 'text',
+                'label' => $this->l('Consumer Key'),
+                'desc' => "The consumer_key for your Twitter account",
+                'name' => 'CONSUMER_KEY',
+                'required' => false
+            ),
+            array(
+                'type' => 'text',
+                'label' => $this->l('Consumer Secret'),
+                'desc' => "The consumer_secret for your Twitter account",
+                'name' => 'CONSUMER_SECRET',
+                'required' => false
+            ),
+            array(
+                'type' => 'text',
+                'label' => $this->l('Access Token'),
+                'desc' => "The access_token for you Twitter account",
+                'name' => 'ACCESS_TOKEN',
+                'required' => false
+            ),
+            array(
+                'type' => 'text',
+                'label' => $this->l('Access Token Secret'),
+                'desc' => "The access_token_secret for you Twitter account",
+                'name' => 'ACCESS_TOKEN_SECRET',
+                'required' => false
+            )
+        ),
+        'submit' => array(
+            'title' => $this->l('Save'),
+            'class' => 'btn btn-default pull-right'
+        )
+    );
+
+    $helper = new HelperForm();
+
+    // Module, token and currentIndex
+    $helper->module = $this;
+    $helper->name_controller = $this->name;
+    $helper->token = Tools::getAdminTokenLite('AdminModules');
+    $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+
+    // Language
+    $helper->default_form_language = $default_lang;
+    $helper->allow_employee_form_lang = $default_lang;
+
+    // Title and toolbar
+    $helper->title = $this->displayName;
+    $helper->show_toolbar = true;        // false -> remove toolbar
+    $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
+    $helper->submit_action = 'submit'.$this->name;
+    $helper->toolbar_btn = array(
+        'save' =>
+        array(
+            'desc' => $this->l('Save'),
+            'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.
+            '&token='.Tools::getAdminTokenLite('AdminModules'),
+        ),
+        'back' => array(
+            'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
+            'desc' => $this->l('Back to list')
+        )
+    );
+
+    // Load current value
+    $helper->fields_value['CONSUMER_KEY'] =  $credentials['MYPRESTAMODULE2_CONSUMER_KEY'] ? $credentials['MYPRESTAMODULE2_CONSUMER_KEY'] : '';
+    $helper->fields_value['CONSUMER_SECRET'] =  $credentials['MYPRESTAMODULE2_CONSUMER_SECRET'] ? $credentials['MYPRESTAMODULE2_CONSUMER_SECRET'] : '';
+    $helper->fields_value['ACCESS_TOKEN'] =  $credentials['MYPRESTAMODULE2_ACCESS_TOKEN'] ? $credentials['MYPRESTAMODULE2_ACCESS_TOKEN'] : '';
+    $helper->fields_value['ACCESS_TOKEN_SECRET'] =  $credentials['MYPRESTAMODULE2_ACCESS_TOKEN_SECRET'] ? $credentials['MYPRESTAMODULE2_ACCESS_TOKEN_SECRET'] : '';
+    $helper->fields_value['CUSTOM_TWEET'] =  $customTweet ? $customTweet : '';
+
+    $form = $helper->generateForm($fields_form);
+    return $form;
+  }
 }
