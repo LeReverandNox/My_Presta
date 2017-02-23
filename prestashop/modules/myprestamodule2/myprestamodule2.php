@@ -26,7 +26,8 @@ class MyPrestaModule2 extends Module
   public function install()
   {
     if(!parent::install() ||
-      !$this->registerHook("actionProductAdd")) {
+      !$this->registerHook("actionProductAdd") ||
+      ! Configuration::updateValue('MYPRESTAMODULE2_CUSTOM_TWEET', 'is now available on our store ! Check it out !')) {
       return false;
     }
     return true;
@@ -34,7 +35,8 @@ class MyPrestaModule2 extends Module
 
   public function uninstall()
   {
-    if(!parent::uninstall()) {
+    if(!parent::uninstall() ||
+      !Configuraton::deleteByName('MYPRESTAMODULE2_CUSTOM_TWEET')) {
       return false;
     }
     return true;
