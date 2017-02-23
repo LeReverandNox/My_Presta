@@ -31,6 +31,9 @@ services:
         restart: always
         links:
             - mariadb:db
+        dns:
+            - 8.8.8.8
+            - 8.8.4.4
         volumes:
             - ./prestashop/modules/myprestamodule1:/var/www/html/modules/myprestamodule1
             - ./prestashop/modules/myprestamodule2:/var/www/html/modules/myprestamodule2
