@@ -3,6 +3,9 @@ if (!defined('_PS_VERSION_')) {
   exit;
 }
 
+require_once __DIR__ . '/lib/twitteroauth/autoload.php';
+use Abraham\TwitterOAuth\TwitterOAuth as TwitterOAuth;
+
 class MyPrestaModule2 extends Module
 {
   public function __construct()
