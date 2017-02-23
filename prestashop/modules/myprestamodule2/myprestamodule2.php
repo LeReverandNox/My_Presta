@@ -4,7 +4,6 @@ if (!defined('_PS_VERSION_')) {
 }
 
 require_once __DIR__ . '/lib/twitteroauth/autoload.php';
-use Abraham\TwitterOAuth\TwitterOAuth as TwitterOAuth;
 
 class MyPrestaModule2 extends Module
 {
@@ -58,7 +57,7 @@ class MyPrestaModule2 extends Module
       $credentials['MYPRESTAMODULE2_CONSUMER_SECRET'] &&
       $credentials['MYPRESTAMODULE2_ACCESS_TOKEN'] &&
       $credentials['MYPRESTAMODULE2_ACCESS_TOKEN_SECRET']) {
-        $twitter = new TwitterOAuth($credentials['MYPRESTAMODULE2_CONSUMER_KEY'], $credentials['MYPRESTAMODULE2_CONSUMER_SECRET'], $credentials['MYPRESTAMODULE2_ACCESS_TOKEN'], $credentials['MYPRESTAMODULE2_ACCESS_TOKEN_SECRET']);
+        $twitter = new Abraham\TwitterOAuth\TwitterOAuth($credentials['MYPRESTAMODULE2_CONSUMER_KEY'], $credentials['MYPRESTAMODULE2_CONSUMER_SECRET'], $credentials['MYPRESTAMODULE2_ACCESS_TOKEN'], $credentials['MYPRESTAMODULE2_ACCESS_TOKEN_SECRET']);
 
         $customTweet = Configuration::get('MYPRESTAMODULE2_CUSTOM_TWEET');
 
@@ -74,7 +73,7 @@ class MyPrestaModule2 extends Module
         $tinyUrl = curl_exec($curl);
 
         $withoutName = '" ' . $customTweet . ' ' . $tinyUrl;
-        $maxProductName = 140 - strlen($withoutName);
+        $maxProductName = 139 - strlen($withoutName);
 
         if (strlen($product->name[1]) > $maxProductName) {
           $pName =  substr ($product->name[1], 0, $maxProductName - 3);
