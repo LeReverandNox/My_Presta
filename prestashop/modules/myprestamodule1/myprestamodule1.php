@@ -32,6 +32,8 @@ class MyPrestaModule1 extends Module
       !$this->registerHook("displayProductTab") ||
       !$this->registerHook("displayAdminProductsExtra") ||
       !$this->registerHook("actionProductUpdate") ||
+      !$this->registerHook("actionProductAdd") ||
+      !$this->registerHook("actionProductDelete") ||
       !$this->registerHook("displayHeader")) {
       return false;
     }
@@ -156,11 +158,7 @@ class MyPrestaModule1 extends Module
     $formContent = preg_replace($regex, '', $form);
     $formContent = preg_replace('/<\/form>/', '', $formContent);
 
-    if (Validate::isLoadedObject($product = new Product((int)Tools::getValue('id_product'))))
-    {
-      return $formContent;
-    }
-
+    return $formContent;
   }
 
   public function hookActionProductUpdate($params)
@@ -186,6 +184,33 @@ class MyPrestaModule1 extends Module
         $video->key = $matches[1];
         $video->add();
       }
+    }
+    return true;
+  }
+
+  public function hookActionProductAdd($params)
+  {
+    $id_product = $params["id_product"];
+    $url = ($a = Tools::getValue("YOUTUBE_URL") ? trim(Tools::getValue("YOUTUBE_URL")) : null) ? $a : null;
+
+    $ytRegex = '/(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/';
+    $matches = [];
+    if (preg_match($ytRegex, $url, $matches)) {
+      $video = new Video();
+      $video->id_product = $id_product;
+      $video->key = $matches[1];
+      $video->add();
+    }
+    return true;
+  }
+
+  public function hookActionProductDelete($params)
+  {
+    $id_product = Tools::getValue("id_product");
+    $video = Video::findByProductId($id_product);
+
+    if ($video) {
+      $video->delete();
     }
     return true;
   }
