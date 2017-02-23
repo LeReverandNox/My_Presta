@@ -44,4 +44,51 @@ class MyPrestaModule2 extends Module
     }
     return true;
   }
+
+  public function hookActionProductAdd($params)
+  {
+    $credentials = Configuration::getMultiple([
+      'MYPRESTAMODULE2_CONSUMER_KEY',
+      'MYPRESTAMODULE2_CONSUMER_SECRET',
+      'MYPRESTAMODULE2_ACCESS_TOKEN',
+      'MYPRESTAMODULE2_ACCESS_TOKEN_SECRET'
+    ]);
+
+    if ($credentials['MYPRESTAMODULE2_CONSUMER_KEY'] &&
+      $credentials['MYPRESTAMODULE2_CONSUMER_SECRET'] &&
+      $credentials['MYPRESTAMODULE2_ACCESS_TOKEN'] &&
+      $credentials['MYPRESTAMODULE2_ACCESS_TOKEN_SECRET']) {
+        $twitter = new TwitterOAuth($credentials['MYPRESTAMODULE2_CONSUMER_KEY'], $credentials['MYPRESTAMODULE2_CONSUMER_SECRET'], $credentials['MYPRESTAMODULE2_ACCESS_TOKEN'], $credentials['MYPRESTAMODULE2_ACCESS_TOKEN_SECRET']);
+
+        $customTweet = Configuration::get('MYPRESTAMODULE2_CUSTOM_TWEET');
+
+        $id_product = $params["id_product"];
+        $product = new Product($id_product);
+        $link = new Link();
+        $url = $link->getProductLink($product);
+
+        $curl = curl_init();
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($curl,CURLOPT_URL,'http://tinyurl.com/api-create.php?url='.$url);
+        curl_setopt($curl,CURLOPT_CONNECTTIMEOUT,7);
+        $tinyUrl = curl_exec($curl);
+
+        $withoutName = '" ' . $customTweet . ' ' . $tinyUrl;
+        $maxProductName = 140 - strlen($withoutName);
+
+        if (strlen($product->name[1]) > $maxProductName) {
+          $pName =  substr ($product->name[1], 0, $maxProductName - 3);
+          $pName .= "...";
+        } else {
+          $pName = $product->name[1];
+        }
+
+        $msg = '"' . $pName . $withoutName;
+
+        $twitter->post('statuses/update', [
+          'status' => $msg
+        ]);
+      }
+      return true;
+  }
 }
