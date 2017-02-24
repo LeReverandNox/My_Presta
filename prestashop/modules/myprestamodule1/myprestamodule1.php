@@ -207,10 +207,12 @@ class MyPrestaModule1 extends Module
   public function hookActionProductDelete($params)
   {
     $id_product = Tools::getValue("id_product");
-    $video = Video::findByProductId($id_product);
+    if ($id_product) {
+      $video = Video::findByProductId($id_product);
 
-    if ($video) {
-      $video->delete();
+      if ($video) {
+        $video->delete();
+      }
     }
     return true;
   }
